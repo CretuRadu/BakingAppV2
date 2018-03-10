@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="step"
+            type="com.example.xayru.bakingappv2.data.Step" />
+
+        <variable
+            name="callback"
+            type="com.example.xayru.bakingappv2.ui.StepClickCallback" />
+
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/step_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:onClick="@{() -> callback.onClick(step)}"
+            card_view:cardCornerRadius="4dp">
+
+            <TextView
+                android:id="@+id/step_srtdesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="@{step.shrtDesc}"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</layout>
