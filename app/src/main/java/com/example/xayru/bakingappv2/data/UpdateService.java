@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -93,6 +92,7 @@ public class UpdateService extends IntentService {
                 }
                 RecipeDatabase database = RecipeDatabase.getInstance(getApplicationContext());
                 AsyncTask.execute(() -> RecipeDatabase.insertData(database, mRecipes, mIngs, mSteps));
+                Log.d(TAG, "onHandleIntent: data loaded");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -100,6 +100,6 @@ public class UpdateService extends IntentService {
 
         RequestQueue requestQueue = Volley.newRequestQueue(getBaseContext());
         requestQueue.add(jsonArrayRequest);
-
+        
     }
 }

@@ -44,7 +44,16 @@ android {
         testImplementation 'junit:junit:4.12'
         testImplementation "android.arch.core:core-testing:1.1.0"
         testImplementation "android.arch.persistence.room:testing:1.0.0"
+        androidTestCompile 'com.squareup.okhttp3:mockwebserver:3.6.0'
         androidTestImplementation 'com.android.support.test:runner:1.0.1'
         androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+        androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.1'
+        androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.1') {
+            exclude module: 'support-annotations'
+            exclude module: 'support-v4'
+            exclude module: 'design'
+            exclude module: 'recyclerview-v7'
+        }
+
     }
 }

@@ -32,6 +32,7 @@ public class RecipeDetailFragment extends Fragment {
     private RecipeDetailBinding mBinding;
     private StepAdapter adapter;
     private int stepsSize;
+    private Boolean twoPane;
 
 
     /**
@@ -92,30 +93,12 @@ public class RecipeDetailFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        if (getArguments().containsKey(ARG_RECIPE_ID)) {
-//            // Load the dummy content specified by the fragment
-//            // arguments. In a real-world scenario, use a Loader
-//            // to load content from a content provider.
-//            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_RECIPE_ID));
-//
-//            Activity activity = this.getActivity();
-//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-//            if (appBarLayout != null) {
-//                appBarLayout.setTitle(mItem.content);
-//            }
-//        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.recipe_detail, container, false);
         adapter = new StepAdapter(callback);
         mBinding.stepsRecycler.setAdapter(adapter);
-
+        twoPane = this.getResources().getConfiguration().screenWidthDp >= 900;
         return mBinding.getRoot();
     }
 
@@ -125,6 +108,13 @@ public class RecipeDetailFragment extends Fragment {
         args.putInt(StepFragment.KEY_STEPS_SIZE, stepsSize);
         StepFragment fragment = StepFragment.forStep(step.getId(),stepsSize);
         fragment.setArguments(args);
-        getFragmentManager().beginTransaction().replace(R.id.recipe_detail_container,fragment).addToBackStack(null).commit();
+        if (twoPane) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.step_detail_container, fragment, StepFragment.STEP_FRAG)
+                    .commit();
+        } else {
+            getFragmentManager().beginTransaction().replace(R.id.recipe_detail_container, fragment).addToBackStack(null).commit();
+        }
+
     };
 }

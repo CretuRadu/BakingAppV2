@@ -2,6 +2,7 @@ package com.example.xayru.bakingappv2.ui;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,9 +37,12 @@ import static com.google.android.exoplayer2.mediacodec.MediaCodecInfo.TAG;
 public class StepFragment extends Fragment {
 
     public static final String KEY_STEP_ID = "step_id";
+    public static final String STEP_FRAG = "step_frag_id";
     public static final String KEY_STEPS_SIZE = "steps_size";
     private StepDetailBinding stepBinding;
     private SimpleExoPlayer exoPlayer;
+    private boolean twoPane;
+    private int stepId;
 
     public StepFragment() {
 
@@ -56,6 +60,7 @@ public class StepFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        twoPane = this.getResources().getConfiguration().screenWidthDp >= 900;
         StepViewModel.Factory factory = new StepViewModel.Factory(getActivity().getApplication(), getArguments().getInt(KEY_STEP_ID));
         final StepViewModel viewModel = ViewModelProviders.of(this, factory).get(StepViewModel.class);
         Log.d(TAG, "onActivityCreated: id for step " + getArguments().getInt(KEY_STEP_ID));
@@ -65,11 +70,13 @@ public class StepFragment extends Fragment {
     private void subscribeStep(StepViewModel viewModel) {
         viewModel.getStep().observe(this, step -> {
             if (step != null) {
+                stepId = step.getId();
                 initializeExoPlayer(step);
                 stepBinding.setStep(step);
             }
         });
     }
+
     private void initializeExoPlayer(Step step) {
         if (exoPlayer == null) {
             exoPlayer = ExoPlayerFactory.newSimpleInstance(

@@ -1,6 +1,8 @@
 package com.example.xayru.bakingappv2.ui;
 
+import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +18,12 @@ import com.example.xayru.bakingappv2.R;
  * in a {@link RecipeListActivity}.
  */
 public class RecipeDetailActivity extends AppCompatActivity {
-
+    public boolean twoPane;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
         setContentView(R.layout.activity_recipe_detail);
+        twoPane = findViewById(R.id.step_detail_container) != null;
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -48,14 +51,34 @@ public class RecipeDetailActivity extends AppCompatActivity {
         //
         // http://developer.android.com/guide/components/fragments.html
         //
-        if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putInt(RecipeDetailFragment.ARG_RECIPE_ID,
-                    getIntent().getIntExtra(RecipeDetailFragment.ARG_RECIPE_ID,3));
-            RecipeDetailFragment fragment = RecipeDetailFragment.forRecipe(getIntent().getIntExtra(RecipeDetailFragment.ARG_RECIPE_ID,3));
-            fragment.setArguments(arguments);
+        startFragment();
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation== Configuration.ORIENTATION_PORTRAIT){
+            Fragment fragment = getFragmentManager().findFragmentByTag(StepFragment.STEP_FRAG);
+            if(fragment!=null){
+                getFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+        }
+    }
+
+    private void startFragment(){
+        Bundle arguments = new Bundle();
+        arguments.putInt(RecipeDetailFragment.ARG_RECIPE_ID,
+                getIntent().getIntExtra(RecipeDetailFragment.ARG_RECIPE_ID, 3));
+        RecipeDetailFragment fragment = RecipeDetailFragment.forRecipe(getIntent().getIntExtra(RecipeDetailFragment.ARG_RECIPE_ID, 3));
+        fragment.setArguments(arguments);
+
+        if (twoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.recipe_detail_container, fragment)
+                    .commit();
+
+        } else {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.recipe_detail_container, fragment)
                     .commit();
